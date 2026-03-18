@@ -12,26 +12,33 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     });
 
+    // Create the prompter module
     const zig_prompter_module = b.addModule("prompter", .{
         .root_source_file = b.path("src/root.zig"),
+        .target = target,
+        .optimize = optimize,
+        .imports = &.{
+            .{ .name = "mibu", .module = mibu_dep.module("mibu") },
+        },
     });
-    zig_prompter_module.addImport("mibu", mibu_dep.module("mibu"));
 
     if (build_exe) {
         const exe = b.addExecutable(.{
             .name = "prompter-example",
-            .target = target,
-            .optimize = optimize,
-            .root_source_file = b.path("example/main.zig"),
+            .root_module = b.createModule(.{
+                .root_source_file = b.path("example/main.zig"),
+                .target = target,
+                .optimize = optimize,
+                .imports = &.{
+                    .{ .name = "prompter", .module = zig_prompter_module },
+                },
+            }),
         });
-        exe.root_module.addImport("prompter", zig_prompter_module);
         b.installArtifact(exe);
 
         const run_cmd = b.addRunArtifact(exe);
         run_cmd.step.dependOn(b.getInstallStep());
 
-        // This allows the user to pass arguments to the application in the build
-        // command itself, like this: `zig build run -- arg1 arg2 etc`
         if (b.args) |args| {
             run_cmd.addArgs(args);
         }
@@ -41,9 +48,14 @@ pub fn build(b: *std.Build) void {
     }
 
     const lib_test = b.addTest(.{
-        .root_source_file = b.path("src/root.zig"),
-        .target = target,
-        .optimize = optimize,
+        .root_module = b.createModule(.{
+            .root_source_file = b.path("src/root.zig"),
+            .target = target,
+            .optimize = optimize,
+            .imports = &.{
+                .{ .name = "mibu", .module = mibu_dep.module("mibu") },
+            },
+        }),
     });
 
     const run_lib_tests = b.addRunArtifact(lib_test);

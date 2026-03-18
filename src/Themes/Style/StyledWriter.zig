@@ -4,7 +4,8 @@ const mibu = @import("mibu");
 
 const Style = @import("Style.zig");
 
-pub const Writer = std.fs.File.Writer;
+/// In Zig 0.15.2, the generic writer interface is *std.Io.Writer.
+pub const Writer = *std.Io.Writer;
 
 writer: Writer,
 style: ?Style = null,
@@ -19,13 +20,13 @@ inline fn writeStyle(writer: Writer, style: Style) !void {
         try mibu.color.bgRGB(writer, c.r, c.g, c.b);
     }
     if (style.bold) {
-        try mibu.style.bold(writer);
+        try mibu.style.bold(writer, true);
     }
     if (style.strikethrough) {
-        try mibu.style.strikethrough(writer);
+        try mibu.style.strikethrough(writer, true);
     }
     if (style.underline) {
-        try mibu.style.underline(writer);
+        try mibu.style.underline(writer, true);
     }
 }
 

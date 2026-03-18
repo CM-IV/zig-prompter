@@ -2,12 +2,9 @@
     .name = .prompter,
     .version = "0.1.0",
     .fingerprint = 0xb4c36e6a6668a74f,
-    .minimum_zig_version = "0.14.0",
+    .minimum_zig_version = "0.15.0",
     .dependencies = .{
-        .mibu = .{
-            .url = "git+https://github.com/xyaman/mibu#b001662c929e2719ee24be585a3120640f946337",
-            .hash = "1220d78664322b50e31a99cfb004b6fa60c43098d95abf7ec60a21ebeaf1c914edaf",
-        },
+        .mibu = .{ .url = "git+https://github.com/xyaman/mibu#b1644432384ac31ffeb45e83d3d3501a911e8865", .hash = "mibu-0.0.1-dev-Ddr1rojEAABcqJWjDNhdeK_CWYjQUZlaGIvJwZOHJWf_" },
     },
     .paths = .{
         "build.zig",
